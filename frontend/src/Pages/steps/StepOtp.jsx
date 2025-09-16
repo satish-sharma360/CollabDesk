@@ -16,6 +16,7 @@ const StepOtp = ({click}) => {
   console.log("🔔 Submit function triggered");
   try {
     const { data } = await verifyOTP({ otp, phone, hash });
+    console.log(data)
     dispatch(setAuth(data)); 
 
     // click();

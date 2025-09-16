@@ -2,6 +2,7 @@ import hashService from "../services/hash.service.js"
 import otpService from "../services/otp.service.js"
 import tokenService from "../services/token.service.js"
 import userService from "../services/user.service.js"
+import useDto from "../Dtos/user.dto.js"
 
 class AuthController {
     // Send OTP to user
@@ -18,15 +19,13 @@ class AuthController {
         const data = `${phone}.${otpStr}.${expires}`;
         const hashOtp = hashService.hashOtp(data);
 
-        // Debug log
-        console.log("[sendOtp] data:", data);
-        console.log("[sendOtp] HASH_KEY:", process.env.HASH_KEY);
 
         try {
-            await otpService.sendBysms(phone, otp);
+            // await otpService.sendBysms(phone, otp);
             return res.json({
                 hash: `${hashOtp}.${expires}`,
-                phone
+                phone,
+                otp
             });
         } catch (error) {
             console.error("[sendOtp] Error sending SMS:", error);
@@ -79,7 +78,8 @@ class AuthController {
             maxAge: 1000 * 60 * 60 * 24 * 30,
             httpOnly: true
         });
-        res.json(accessToken);
+        const userDto = new useDto(user)
+        res.json({accessToken ,user:userDto});
     }
 }
 

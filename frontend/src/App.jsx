@@ -2,16 +2,11 @@ import React, { Children } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Pages/Home";
 import Navigation from "./components/shared/navigation/Navigation";
-import Register from "./Pages/Register";
-import Login from "./Pages/Login";
 import Authenticate from "./Pages/Authenticate";
 import Activate from "./Pages/Activate";
 import Rooms from "./Pages/Rooms";
+import { useSelector } from "react-redux";
 
-const isAuth = false;
-const User ={
-  activate:false
-}
 
 const App = () => {
   return (
@@ -60,18 +55,33 @@ const App = () => {
 };
 
 const GuestRoute = ({ children }) => {
+  const {isAuth} = useSelector((state) => state.auth)
   return isAuth ? <Navigate to="/rooms" replace /> : children;
 };
 const SemiProtectedRoute = ({ children }) => {
-  return !isAuth ? 
-  (<Navigate to="/" replace />)
-  :isAuth && !User.activate?(children) 
-  : (<Navigate to="/rooms" replace />) ;
+  const { user, isAuth } = useSelector((state) => state.auth);
+
+  // If not authenticated, redirect to home
+  if (!isAuth) return <Navigate to="/" replace />;
+
+  // If authenticated but not activated, allow
+  if (isAuth && user && !user.activated) return children;
+
+  // If authenticated and activated, redirect to rooms
+  return <Navigate to="/rooms" replace />;
 };
+
 const ProtectedRoute = ({ children }) => {
-  return !isAuth ? (<Navigate to="/" replace />)
-  :isAuth && !User.activate?(<Navigate to="/activate" replace />) 
-  : (children) ;
+  const { user, isAuth } = useSelector((state) => state.auth);
+
+  // If not authenticated, redirect to home
+  if (!isAuth) return <Navigate to="/" replace />;
+
+  // If authenticated but not activated, redirect to activate
+  if (isAuth && user && !user.activated) return <Navigate to="/activate" replace />;
+
+  // Authenticated and activated, allow access
+  return children;
 };
 
 export default App;

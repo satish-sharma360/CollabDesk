@@ -8,4 +8,4 @@ class UserService{
         return await userModel.create(data)
     }
 }
-export default new UserService
+export default new UserService()

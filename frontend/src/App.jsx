@@ -16,9 +16,9 @@ const App = () => {
 
   return loading? ( <Loader message='Loading, Please wait...'/>):
    (
-    <div className="bg-zinc-900 h-screen w-full text-white">
-      <div className="w-11/12 h-screen mx-auto">
+    <div className="bg-zinc-900 h-full w-full text-white">
         <Navigation />
+      <div className="w-11/12 mx-auto">
         <Routes>
           <Route
             path="/"

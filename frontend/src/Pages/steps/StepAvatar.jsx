@@ -28,11 +28,15 @@ const StepAvatar = ({ click }) => {
   const submitHandler = async () => {
     setLoading(true);
     try {
-      if (!name || !avatar) return
-      alert('Please select Image')
+      if (!name || !avatar) {
+        alert('Please select Image');
+        setLoading(false);
+        return;
+      }
       const { data } = await activate({ name, avatar });
       if (data.auth) {
         dispatch(setAuth(data));
+        dispatch(setAvatar("")); // Clear avatar after activation
       }
       console.log(data);
     } catch (error) {
@@ -48,13 +52,15 @@ const StepAvatar = ({ click }) => {
     <div className="h-full w-full flex items-center justify-center">
       <Card title={`👋 Okey, ${name}!`}>
         <p className="text-center text-gray-300">How's this photo?</p>
-        <div className="h-[110px] w-[110px] border-[4px] shadow-2xl border-green-400 rounded-full overflow-hidden">
-          <img
-            className="h-full w-full object-cover object-top"
-            src={image}
-            alt="avatar"
-          />
-        </div>
+        {image && (
+          <div className="h-[110px] w-[110px] border-[4px] shadow-2xl border-green-400 rounded-full overflow-hidden">
+            <img
+              className="h-full w-full object-cover object-top"
+              src={image}
+              alt="avatar"
+            />
+          </div>
+        )}
         <div>
           <label
             htmlFor="avatarInput"

@@ -13,7 +13,7 @@ const Phone = ({click}) => {
 
 
     const submit = async () =>{
-      // Server Request
+      if (!phoneNumber) return
       const {data} = await sendOTP({phone:phoneNumber})
       console.log(data)
       dispatch(setOTP({phone:data.phone,hash:data.hash}))

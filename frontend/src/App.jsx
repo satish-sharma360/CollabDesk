@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React, { Children, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Pages/Home";
 import Navigation from "./components/shared/navigation/Navigation";
@@ -6,10 +6,16 @@ import Authenticate from "./Pages/Authenticate";
 import Activate from "./Pages/Activate";
 import Rooms from "./Pages/Rooms";
 import { useSelector } from "react-redux";
+import useLoadingWithRefresh from "./hooks/useLoadingWithRefresh";
+import Loader from "./components/shared/Loader";
 
 
 const App = () => {
-  return (
+ 
+  const {loading} = useLoadingWithRefresh()
+
+  return loading? ( <Loader message='Loading, Please wait...'/>):
+   (
     <div className="bg-zinc-900 h-screen w-full text-white">
       <div className="w-11/12 h-screen mx-auto">
         <Navigation />

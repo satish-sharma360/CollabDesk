@@ -3,6 +3,7 @@ import otpService from "../services/otp.service.js"
 import tokenService from "../services/token.service.js"
 import userService from "../services/user.service.js"
 import useDto from "../Dtos/user.dto.js"
+import auth from "../middleware/auth.middleware.js"
 
 class AuthController {
     // Send OTP to user
@@ -78,7 +79,7 @@ class AuthController {
             activated: false
         });
 
-        await tokenService.storeRefreshToken(refreshToken ,user._id)
+        await tokenService.storeRefreshToken(refreshToken, user._id)
 
         res.cookie('refreshToken', refreshToken, {
             maxAge: 1000 * 60 * 60 * 24 * 30,
@@ -92,7 +93,72 @@ class AuthController {
 
 
         const userDto = new useDto(user)
-        res.json({user: userDto , auth : true });
+        res.json({ user: userDto, auth: true });
+    }
+
+    async refresh(req, res) {
+        // get refresh token from cookie (should be req.cookies)
+        const { refreshToken: refreshTokenFromCookie } = req.cookies;
+        if (!refreshTokenFromCookie) {
+            return res.status(401).json({ success: false, message: 'No refresh token provided' });
+        }
+        // check if token is valid
+        let userdata;
+        try {
+            userdata = await tokenService.verifyRefreshToken(refreshTokenFromCookie);
+        } catch (error) {
+            return res.status(401).json({ success: false, message: 'Invalid token' });
+        }
+        // check if token is in DB 
+        try {
+            const token = await tokenService.findRefreshToken(userdata._id, refreshTokenFromCookie);
+            if (!token) {
+                return res.status(401).json({ success: false, message: 'Token not in DB' });
+            }
+        } catch (error) {
+            return res.status(401).json({ success: false, message: 'Internal error' });
+        }
+        // find user (await!)
+        const user = await userService.findUser({ _id: userdata._id });
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'User not present in DB' });
+        }
+        // generate new token 
+        const { accessToken, refreshToken } = tokenService.generateTokens({ _id: userdata._id });
+        // update refresh Token
+        try {
+            await tokenService.updateRefreshToken(userdata._id, refreshToken);
+        } catch (error) {
+            return res.status(401).json({ success: false, message: 'Error while updating Token' });
+        }
+
+        // put in cookie
+        res.cookie('refreshToken', refreshToken, {
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            httpOnly: true
+        });
+
+        res.cookie('accessToken', accessToken, {
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            httpOnly: false
+        });
+
+        // send response
+        const userDto = new useDto(user);
+        res.json({ user: userDto, auth: true });
+    }
+
+    async logout(req, res) {
+        const { refreshToken } = req.cookies;
+        if (!refreshToken) {
+            res.clearCookie('refreshToken');
+            res.clearCookie('accessToken');
+            return res.json({ user: null, auth: false });
+        }
+        await tokenService.removeToken(refreshToken);
+        res.clearCookie('refreshToken');
+        res.clearCookie('accessToken');
+        return res.json({ user: null, auth: false });
     }
 }
 

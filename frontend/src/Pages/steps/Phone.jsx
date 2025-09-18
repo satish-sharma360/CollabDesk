@@ -20,7 +20,7 @@ const Phone = ({click}) => {
       click()
     }
   return (
-    <div>
+  <div className="h-[70vh] w-full flex flex-col items-center justify-center">
       <Card title={"📞Enter Your Phone number"}>
         <TextInput
         placeholder="+91 88776-65544"

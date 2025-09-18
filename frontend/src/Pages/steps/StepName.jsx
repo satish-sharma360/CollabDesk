@@ -20,7 +20,7 @@ const StepName = ({click}) => {
     click()
   }
   return (
-    <div className='h-full w-full flex items-center justify-center'>
+  <div className='h-[70vh] w-full flex flex-col items-center justify-center'>
       <Card title={"😎What's your name?"}>
         <TextInput value={fullname} onChange={(e)=>setFullname(e.target.value)}/>
           <p className='text-center text-gray-300 w-[70%]'>People use real names at collabDesk :)</p>

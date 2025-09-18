@@ -6,7 +6,7 @@ import TextInput from "../../components/shared/TextInput";
 const Email = ({click}) => {
   const [email, setEmail] = useState("");
   return (
-    <div>
+  <div className="h-[70vh] w-full flex flex-col items-center justify-center">
       <Card title={"📩Enter your Email Id"}>
         <TextInput 
         placeholder="test@gmail.com"

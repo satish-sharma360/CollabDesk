@@ -8,6 +8,7 @@ import Rooms from "./Pages/Rooms";
 import { useSelector } from "react-redux";
 import useLoadingWithRefresh from "./hooks/useLoadingWithRefresh";
 import Loader from "./components/shared/Loader";
+import Room from "./Pages/Room";
 
 
 const App = () => {
@@ -16,8 +17,8 @@ const App = () => {
 
   return loading? ( <Loader message='Loading, Please wait...'/>):
    (
-    <div className="bg-zinc-900 h-full w-full text-white">
-        <Navigation />
+    <div className="bg-zinc-900 min-h-screen w-full text-white">
+      <Navigation />
       <div className="w-11/12 mx-auto">
         <Routes>
           <Route
@@ -51,6 +52,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Rooms/>
+            </ProtectedRoute>
+          }
+          />
+          <Route 
+          path='/room/:id'
+          element={
+            <ProtectedRoute>
+              <Room/>
             </ProtectedRoute>
           }
           />

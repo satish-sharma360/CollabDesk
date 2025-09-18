@@ -25,27 +25,27 @@ const Navigation = () => {
   };
 
   return (
-    <div className="w-full flex items-center h-16 mb-28 border-b-[1px] border-gray-600 shadow-2xl">
+    <div className="w-full flex items-center h-[10vh] mb-20 sm:mb-24 md:mb-28 border-b-[1px] border-gray-600 shadow-2xl">
       <div className="w-11/12 mx-auto flex items-center justify-between ">
         {/* Left: Logo */}
         <Link
-          className="text-3xl font-bold bg-[linear-gradient(2005deg,rgb(255,255,247)_8.55%,rgb(114,114,103)_107.01%)] bg-clip-text text-transparent"
+          className="text-2xl sm:text-3xl font-bold bg-[linear-gradient(2005deg,rgb(255,255,247)_8.55%,rgb(114,114,103)_107.01%)] bg-clip-text text-transparent"
           to="/"
         >
           Collab<span className="text-green-400">Desk</span>
         </Link>
         {/* Right: name, avatar, button */}
         {isAuth && (
-          <div className="flex items-center gap-4">
-            {name && <span className="font-semibold text-white mr-2">{name}</span>}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {name && <span className="font-semibold text-white text-sm sm:text-base md:text-lg mr-1 sm:mr-2">{name}</span>}
             {avatar && (
-              <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-green-400">
+              <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 overflow-hidden rounded-full border-2 border-green-400">
                 <img className="h-full w-full object-cover object-top" src={avatar} alt="" />
               </div>
             )}
             <button
               onClick={logOut}
-              className="px-6 py-[8px] bg-zinc-800 hover:bg-zinc-700  border border-gray-600 cursor-pointer transition-all duration-200 rounded-full"
+              className="px-3 py-1 sm:px-4 sm:py-2 md:px-6 md:py-[8px] bg-zinc-800 hover:bg-zinc-700 border border-gray-600 cursor-pointer transition-all duration-200 rounded-full text-xs sm:text-sm md:text-base"
             >
               Log Out
             </button>
